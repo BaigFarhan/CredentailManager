@@ -1,0 +1,18 @@
+{
+  "$schema": "https://dev.office.com/json-schemas/spfx-build/config.2.0.schema.json",
+  "version": "2.0",
+  "bundles": {
+    "credential-manager-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/credentialManager/CredentialManagerWebPart.js",
+          "manifest": "./src/webparts/credentialManager/CredentialManagerWebPart.manifest.json"
+        }
+      ]
+    }
+  },
+  "externals": {},
+  "localizedResources": {
+    "CredentialManagerWebPartStrings": "lib/webparts/credentialManager/loc/{locale}.js"
+  }
+}

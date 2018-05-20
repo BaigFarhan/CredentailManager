@@ -1,0 +1,8 @@
+{
+  "@microsoft/generator-sharepoint": {
+    "version": "1.4.1",
+    "libraryName": "credential-manager",
+    "libraryId": "5832e880-0895-4227-98e1-86c40476810a",
+    "environment": "spo"
+  }
+}
