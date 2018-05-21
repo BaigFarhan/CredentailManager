@@ -41,7 +41,10 @@ export default class CredentialManager extends React.Component<ICredentialManage
 
   handleClick(e) {
     e.preventDefault();
-     //alert('f'); return false;
+     alert(this.state.ProjectName + this.state.Password + this.state.UserId + this.state.description);
+
+     
+     return false;
      
   }
 
