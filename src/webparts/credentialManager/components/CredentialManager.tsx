@@ -27,6 +27,17 @@ export default class CredentialManager extends React.Component<ICredentialManage
     this.setState({ ProjectName: event.target.value });
   }
 
+  public OnChangeUserID(event: any): void {
+    this.setState({ UserId: event.target.value });
+  }
+
+  public OnChangePassword(event: any): void {
+    this.setState({ Password: event.target.value });
+  }
+
+  public OnChangeDescription(event: any): void {
+    this.setState({ description: event.target.value });
+  }
 
   handleClick(e) {
     e.preventDefault();
@@ -52,35 +63,36 @@ export default class CredentialManager extends React.Component<ICredentialManage
                 <Row>
                   <Field span={4}>
                     <label>User Name  :</label>                    
-                    <input type="text"  value={this.state.UserId} onChange={this.OnChangeProject.bind(this)} />
+                    <input type="text"  value={this.state.UserId} onChange={this.OnChangeUserID.bind(this)} />
                   </Field>
                  
                 </Row>
                 <Row>
                   <Field span={4}>
                     <label>Password</label>                    
-                    <input type="Password"  value={this.state.Password} onChange={this.OnChangeProject.bind(this)} />
+                    <input type="Password"  value={this.state.Password} onChange={this.OnChangePassword.bind(this)} />
                   </Field>
                  
                 </Row>
                 <Row>
                   <Field span={4}>
                     <label>Description</label>
-                    <input type="text"  value={this.state.description} onChange={this.OnChangeProject.bind(this)} />
+                    <input type="text"  value={this.state.description} onChange={this.OnChangeDescription.bind(this)} />
                   </Field>
                  
                 </Row>
                 <Row>
                   <Field span={4}>
-                  <input type="submit"  onClick={this.handleClick} />
-                  
+                  <input type="submit"  onClick={this.handleClick} />                 
                   
                   </Field>
                  
                 </Row>
 
             </GridForm>
-
+{this.state.UserId}
+{this.state.Password}
+{this.state.ProjectName}
      
       </div> 
     
