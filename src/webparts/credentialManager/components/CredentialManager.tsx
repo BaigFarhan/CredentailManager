@@ -12,13 +12,26 @@ export default class CredentialManager extends React.Component<ICredentialManage
   public state: ICredentialManagerProps;
   constructor(props, context) {
     super(props);
+    this.state={
+      description: "",
+      ProjectName: "",
+      UserId: "",
+      Password: "",
+    };
 
     this.handleClick = this.handleClick.bind(this);
   }
 
+  
+  public OnChangeProject(event: any): void {
+    this.setState({ ProjectName: event.target.value });
+  }
+
+
   handleClick(e) {
     e.preventDefault();
-     alert('f'); return false;
+     //alert('f'); return false;
+     
   }
 
   
@@ -32,6 +45,7 @@ export default class CredentialManager extends React.Component<ICredentialManage
                 <Row>
                   <Field span={1}>
                     <label>App Name  :</label>
+                    <input type="text"  value={this.state.ProjectName} onChange={this.OnChangeProject.bind(this)} />
                   <input id="appname" type="text"/>
                 </Field>
                   
