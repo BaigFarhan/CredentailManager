@@ -46,28 +46,27 @@ export default class CredentialManager extends React.Component<ICredentialManage
                   <Field span={1}>
                     <label>App Name  :</label>
                     <input type="text"  value={this.state.ProjectName} onChange={this.OnChangeProject.bind(this)} />
-                  <input id="appname" type="text"/>
                 </Field>
                   
                 </Row>
                 <Row>
                   <Field span={4}>
-                    <label>User Name  :</label>
-                    <input  id="username" type="text" />
+                    <label>User Name  :</label>                    
+                    <input type="text"  value={this.state.UserId} onChange={this.OnChangeProject.bind(this)} />
                   </Field>
                  
                 </Row>
                 <Row>
                   <Field span={4}>
-                    <label>Password</label>
-                    <input id="password" type="password" />
+                    <label>Password</label>                    
+                    <input type="Password"  value={this.state.Password} onChange={this.OnChangeProject.bind(this)} />
                   </Field>
                  
                 </Row>
                 <Row>
                   <Field span={4}>
                     <label>Description</label>
-                    <input type="text" />
+                    <input type="text"  value={this.state.description} onChange={this.OnChangeProject.bind(this)} />
                   </Field>
                  
                 </Row>
