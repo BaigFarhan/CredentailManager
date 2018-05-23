@@ -11,11 +11,10 @@ import * as strings from 'CredentialManagerWebPartStrings';
 import CredentialManager from './components/CredentialManager';
 import { ICredentialManagerProps } from './components/ICredentialManagerProps';
 
-export interface ICredentialManagerWebPartProps {
-  description: string;
-}
 
-export default class CredentialManagerWebPart extends BaseClientSideWebPart<ICredentialManagerWebPartProps> {
+
+
+export default class CredentialManagerWebPart extends BaseClientSideWebPart<ICredentialManagerProps> {
 
   public render(): void {
     const element: React.ReactElement<ICredentialManagerProps > = React.createElement(

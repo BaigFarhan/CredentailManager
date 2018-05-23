@@ -1,6 +1,6 @@
 import * as React from 'react';
-import styles from './CredentailManager.module.scss';
-import { ICredentailManagerProps } from './ICredentailManagerProps';
+import styles from './CredentialManager.module.scss';
+import { ICredentialManagerProps } from './ICredentialManagerProps';
 import { escape } from '@microsoft/sp-lodash-subset';
 import { SPComponentLoader } from '@microsoft/sp-loader';
 import { Button, Modal } from 'react-bootstrap';
@@ -16,8 +16,7 @@ import {
 } from '@microsoft/sp-http';
 
 var CryptoJS = require("crypto-js");
-export default class CredentailManager extends React.Component<ICredentailManagerProps, {}> {
-
+export default class CredentailManager extends React.Component<ICredentialManagerProps, {}> {
 
   protected onInit(): Promise<void> {
     return new Promise<void>((resolve: () => void, reject: (error?: any) => void): void => {
@@ -32,8 +31,8 @@ export default class CredentailManager extends React.Component<ICredentailManage
     });
   }
 
-  public state: ICredentailManagerProps;
-
+  public state: ICredentialManagerProps;
+ 
   constructor(props, context) {
 
     super(props);
@@ -152,9 +151,9 @@ export default class CredentailManager extends React.Component<ICredentailManage
 
   }
 
-  public render(): React.ReactElement<ICredentailManagerProps> {
+  public render(): React.ReactElement<ICredentialManagerProps> {
     return (
-      <div className={styles.credentailManager}>
+      <div className={styles.credentialManager}>
         <div className={"well well-sm"}><h3> <span className={"label label-default"}>Sign Up</span></h3></div>
 
         <Modal show={this.state.isModalOpen} onHide={this.handleClose}>
