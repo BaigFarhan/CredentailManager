@@ -1,6 +1,6 @@
 import * as React from 'react';
-import styles from './CredentialManager.module.scss';
-import { ICredentialManagerProps } from './ICredentialManagerProps';
+import styles from './CredentailManager.module.scss';
+import { ICredentailManagerProps } from './ICredentailManagerProps';
 import { escape } from '@microsoft/sp-lodash-subset';
 import { SPComponentLoader } from '@microsoft/sp-loader';
 import { Button, Modal } from 'react-bootstrap';
@@ -16,7 +16,8 @@ import {
 } from '@microsoft/sp-http';
 
 var CryptoJS = require("crypto-js");
-export default class CredentailManager extends React.Component<ICredentialManagerProps, {}> {
+export default class CredentailManager extends React.Component<ICredentailManagerProps, {}> {
+
 
   protected onInit(): Promise<void> {
     return new Promise<void>((resolve: () => void, reject: (error?: any) => void): void => {
@@ -31,8 +32,8 @@ export default class CredentailManager extends React.Component<ICredentialManage
     });
   }
 
-  public state: ICredentialManagerProps;
- 
+  public state: ICredentailManagerProps;
+
   constructor(props, context) {
 
     super(props);
@@ -46,21 +47,45 @@ export default class CredentailManager extends React.Component<ICredentialManage
       ShowModal: false,
       spHttpClient: this.props.spHttpClient,
       SitrUrl: 'https://mirzaa.sharepoint.com/sites/dev',
+      SucessFullModal: false,
+      ErrorModal: false
     }
 
-    this.handleShow = this.handleShow.bind(this);
-    this.handleClose = this.handleClose.bind(this);
+    this.ShowPopupModal = this.ShowPopupModal.bind(this);
+    this.CloseModal = this.CloseModal.bind(this);
+    this.CloseSucessFullModal = this.CloseSucessFullModal.bind(this);
+    this.CloseErrorModal = this.CloseErrorModal.bind(this);
+
+
     SPComponentLoader.loadCss('https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css');
-    }
+  }
 
-  handleClose(e) {
+  CloseModal(e) {
 
     this.setState({ isModalOpen: false });
     return false;
   }
 
-  handleShow(e) {
-
+  CloseSucessFullModal(e) {
+    this.setState({ SucessFullModal: false });
+    return false;
+  }
+  CloseErrorModal(e) {
+    this.setState({ CloseErrorModal: false });
+    return false;
+  }
+  ShowPopupModal(e) {
+    e.preventDefault();
+    debugger;
+    if (this.state.ProjectName == '') {
+      return false;
+    }
+    else if (this.state.ProjectName == '') {
+      return false;
+    }
+    else if (this.state.Password == '') {
+      return false;
+    }
     this.setState({ isModalOpen: true });
     e.preventDefault();
     return false;
@@ -97,7 +122,7 @@ export default class CredentailManager extends React.Component<ICredentialManage
 
     var reactHandler = this;
     debugger;
-    var reqUrl = reactHandler.state.SitrUrl + "/_api/lists/getbytitle('Cred-Manager')/items";
+    var reqUrl = reactHandler.state.SitrUrl + "/_api/lists/getbytitle('CredentialManager')/items";
     //farhan
 
     jquery.ajax({
@@ -115,26 +140,26 @@ export default class CredentailManager extends React.Component<ICredentialManage
   }
   SaveData(e) {
 
-  
     var AppName = this.state.ProjectName;
     var UserId = this.state.UserId;
-    var PasswordKey = this.state.Password + this.state.Key;
+    var PasswordKey = this.state.Password;
     var Description = this.state.description;
-    var ciphertext = CryptoJS.AES.encrypt(PasswordKey, 'composedownkey');
+    if (this.state.Key == '') {
+      return false;
+    }
+    var Cryptopwd = CryptoJS.AES.encrypt(PasswordKey, this.state.Key);
     //console.log("encrypted text", ciphertext.toString());
 
     // var bytes = CryptoJS.AES.decrypt(ciphertext.toString(), 'secret key 123');
     // var plaintext = bytes.toString(CryptoJS.enc.Utf8);
     // console.log("decrypted text", plaintext);
 
-    pnp.sp.web.lists.getByTitle('Cred-Manager').items.add({
+    pnp.sp.web.lists.getByTitle('CredentialManager').items.add({
       'Title': "Some title",
       'AppName': AppName,
       'UserName1': UserId,
-      'Password': this.state.Password,
+      'Password': Cryptopwd.toString(),
       'CMDescription': Description,
-      'Key': ciphertext.toString()
-
     }).then((result): void => {
 
       this.state.ProjectName = ''
@@ -143,20 +168,21 @@ export default class CredentailManager extends React.Component<ICredentialManage
       this.state.Key = '';
       var Description = this.state.description = '';
       this.setState({ isModalOpen: false });
-      alert('sucessfully added');
+      this.setState({ SucessFullModal: true });
+
 
     }, (error: any): void => {
-      alert(error);
-    });
+      this.setState({ ErrorModal: true });
 
+    });
   }
 
-  public render(): React.ReactElement<ICredentialManagerProps> {
+  public render(): React.ReactElement<ICredentailManagerProps> {
     return (
-      <div className={styles.credentialManager}>
+      <div className={styles.credentailManager} >
         <div className={"well well-sm"}><h3> <span className={"label label-default"}>Sign Up</span></h3></div>
 
-        <Modal show={this.state.isModalOpen} onHide={this.handleClose}>
+        <Modal show={this.state.isModalOpen} onHide={this.CloseModal}>
           <Modal.Header >
             <Modal.Title>Provide Password Key</Modal.Title>
           </Modal.Header>
@@ -171,12 +197,33 @@ export default class CredentailManager extends React.Component<ICredentialManage
             </GridForm>
             <br />
             <button className={"btn btn-success"} onClick={this.SaveData.bind(this)}>Save</button> &nbsp;
-            <button className={'btn btn-primary'} onClick={this.handleClose.bind(this)}>Close</button>
+            <button className={'btn btn-primary'} onClick={this.CloseModal.bind(this)}>Close</button>
           </Modal.Body>
           {/* <Modal.Footer>
-            <Button className={'.btn-primary'} onClick={this.handleClose}>Close</Button>
+            <Button className={'.btn-primary'} onClick={this.CloseModal}>Close</Button>
           </Modal.Footer> */}
         </Modal>
+        <Modal show={this.state.SucessFullModal} >
+          <Modal.Body>
+            <div className="alert alert-success">
+              <strong>Success!</strong>
+            </div>
+          </Modal.Body>
+          <Modal.Footer>
+            <button type="button" onClick={this.CloseSucessFullModal} className="btn btn-default" data-dismiss="modal">Close</button>
+          </Modal.Footer>
+        </Modal>
+        <Modal show={this.state.ErrorModal} onHide={this.CloseSucessFullModal}>
+          <Modal.Body>
+            <div className="alert alert-danger">
+              <strong>Success!</strong>
+            </div>
+          </Modal.Body>
+          <Modal.Footer>
+          <button type="button" onClick={this.CloseErrorModal} className="btn btn-default" data-dismiss="modal">Close</button>
+        </Modal.Footer>
+        </Modal>
+       
         <GridForm>
           <Row>
             <Field span={1}>
@@ -205,8 +252,7 @@ export default class CredentailManager extends React.Component<ICredentialManage
 
           <Row>
             <Field span={4}>
-
-              <button className={'btn btn-info active'} onClick={this.handleShow}>Submit</button>
+              <button className={'btn btn-info active'} onClick={this.ShowPopupModal}>Submit</button>
             </Field>
           </Row>
         </GridForm>
