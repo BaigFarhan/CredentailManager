@@ -94,12 +94,12 @@ export default class CredentialManagerHome extends React.Component<ICredentialMa
     debugger;
     var encryptKey = CryptoJS.AES.decrypt(this.state.UserEnteredPwd, this.state.value);
     var plaintext = encryptKey.toString(CryptoJS.enc.Utf8);
+    if (plaintext!=""){
     this.setState({DecryptedPassword:plaintext});
-    //if (encryptKey.toString(CryptoJS.enc.Utf8) == this.state.UserEnteredPwd) {
-      
-     // alert('farhan');
-      //this.setState({ ModelShow: false });
-    //}
+    }
+    else{
+      this.setState({DecryptedPassword:"Ooops!!!! Wrong Key"});
+    }
   }
   OpenModal(e) {
     debugger;
@@ -129,7 +129,7 @@ export default class CredentialManagerHome extends React.Component<ICredentialMa
   }
   public render(): React.ReactElement<ICredentialManagerHomeProps> {
     const buttonFormatter = (cell, row) => {
-      return <button className={styles.btnresponsive} onClick={() => this.OpenModal(row)}>Encrypt Password</button>;   //<span onClick={() => this.OpenModal(row)}>Encrypt</span>;
+      return <button className={styles.btnresponsive} onClick={() => this.OpenModal(row)}>Decrypt</button>;   //<span onClick={() => this.OpenModal(row)}>Encrypt</span>;
     };
     const styled = this.state.hidebutton ? { 'display': 'none' } : {};
     return (
