@@ -9,10 +9,19 @@
           "manifest": "./src/webparts/credentialManager/CredentialManagerWebPart.manifest.json"
         }
       ]
+    },
+    "credential-manager-home-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/credentialManagerHome/CredentialManagerHomeWebPart.js",
+          "manifest": "./src/webparts/credentialManagerHome/CredentialManagerHomeWebPart.manifest.json"
+        }
+      ]
     }
   },
   "externals": {},
   "localizedResources": {
-    "CredentialManagerWebPartStrings": "lib/webparts/credentialManager/loc/{locale}.js"
+    "CredentialManagerWebPartStrings": "lib/webparts/credentialManager/loc/{locale}.js",
+    "CredentialManagerHomeWebPartStrings": "lib/webparts/credentialManagerHome/loc/{locale}.js"
   }
 }
