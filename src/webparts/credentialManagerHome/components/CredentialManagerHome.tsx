@@ -53,6 +53,7 @@ export default class CredentialManagerHome extends React.Component<ICredentialMa
       hidebutton: true,
       value: '',
       copied: false,
+      DecryptedPassword:"",
 
     }
 
@@ -80,7 +81,8 @@ export default class CredentialManagerHome extends React.Component<ICredentialMa
   }
   CopyToClipBoard(e) {
     debugger;
-    var copyText = document.getElementById("userkey");
+    var copyText =document.getElementById("userkey");
+
     copyText[0].select();
     document.execCommand('copy');
   }
@@ -92,6 +94,7 @@ export default class CredentialManagerHome extends React.Component<ICredentialMa
     debugger;
     var encryptKey = CryptoJS.AES.decrypt(this.state.UserEnteredPwd, this.state.value);
     var plaintext = encryptKey.toString(CryptoJS.enc.Utf8);
+    this.setState({DecryptedPassword:plaintext});
     //if (encryptKey.toString(CryptoJS.enc.Utf8) == this.state.UserEnteredPwd) {
       
      // alert('farhan');
@@ -153,7 +156,7 @@ export default class CredentialManagerHome extends React.Component<ICredentialMa
             <button className={"btn btn-success"} onClick={this.ShowPassword.bind(this)}>Show Password</button> &nbsp;
             <button className={'btn btn-primary'} onClick={this.CloseModal.bind(this)}>Close</button>
             &nbsp;
-            <CopyToClipboard text={this.state.value}
+            <CopyToClipboard text={this.state.DecryptedPassword}
               onCopy={() => this.setState({ copied: true })}>
               <button className={'btn btn-info'} style={styled}>Copy to clipboard</button>
             </CopyToClipboard>
@@ -167,7 +170,7 @@ export default class CredentialManagerHome extends React.Component<ICredentialMa
           striped={true} hover={true} condensed={true} data={this.state.Data} pagination={true}>
           <TableHeaderColumn isKey dataField='UserName1'>User Name</TableHeaderColumn>
           <TableHeaderColumn dataField='AppName'>App Name</TableHeaderColumn>
-          <TableHeaderColumn dataField='Password'>Encrypt Password</TableHeaderColumn>
+          <TableHeaderColumn dataField='Password'>Get</TableHeaderColumn>
           <TableHeaderColumn dataFormat={buttonFormatter}></TableHeaderColumn>
         </BootstrapTable>
       </div>

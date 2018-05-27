@@ -14,4 +14,6 @@ export interface ICredentialManagerHomeProps {
   hidebutton:boolean;
   value: '',
   copied: false,
+  DecryptedPassword:string;
+
 }
