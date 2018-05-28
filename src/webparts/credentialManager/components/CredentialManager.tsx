@@ -41,11 +41,7 @@ export default class CredentialManager extends React.Component<ICredentialManage
       resolve();
     });
   }
-
-
-
   public state: ICredentialManagerProps;
-
   constructor(props, context) {
 
     super(props);
@@ -279,11 +275,11 @@ export default class CredentialManager extends React.Component<ICredentialManage
     const buttonFormatter = (cell, row) => {
       return (
         <div>
-      <button className={styless.btnresponsive} onClick={() => this.OpenModal(row)}>Decrypt</button>
-      <button className={styless.btnresponsive} onClick={() => this.OpenModal(row)}>Delete</button>  
-      <button className={styless.btnresponsive} onClick={() => this.OpenModal(row)}>Edit</button>  
-      </div>
-      ) 
+          <button className={styless.btnresponsive} onClick={() => this.OpenModal(row)}>Decrypt</button>
+          <button className={styless.btnresponsive} onClick={() => this.OpenModal(row)}>Delete</button>
+          <button className={styless.btnresponsive} onClick={() => this.OpenModal(row)}>Edit</button>
+        </div>
+      )
     };
 
 
