@@ -21,6 +21,10 @@ import {
 } from '@microsoft/sp-http';
 
 
+
+
+
+
 export default class CredentialManagerHome extends React.Component<ICredentialManagerHomeProps, {}> {
   protected onInit(): Promise<void> {
     return new Promise<void>((resolve: () => void, reject: (error?: any) => void): void => {
@@ -64,6 +68,7 @@ export default class CredentialManagerHome extends React.Component<ICredentialMa
     SPComponentLoader.loadScript('https://npmcdn.com/react-bootstrap-table/dist/react-bootstrap-table.min.js');
     SPComponentLoader.loadCss('https://npmcdn.com/react-bootstrap-table/dist/react-bootstrap-table-all.min.css');
     SPComponentLoader.loadCss('https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css');
+    
   }
 
   componentDidMount() {
@@ -131,9 +136,17 @@ export default class CredentialManagerHome extends React.Component<ICredentialMa
     const buttonFormatter = (cell, row) => {
       return <button className={styles.btnresponsive} onClick={() => this.OpenModal(row)}>Decrypt</button>;   //<span onClick={() => this.OpenModal(row)}>Encrypt</span>;
     };
+
+
+
     const styled = this.state.hidebutton ? { 'display': 'none' } : {};
     return (
-      <div className={styles.credentialManagerHome}>
+      <div className={styles.credentialManagerHome}>      
+
+      
+
+
+
         <Modal show={this.state.ModelShow} onHide={this.CloseModal}>
           <Modal.Header >
             <Modal.Title>Provide Password Key</Modal.Title>

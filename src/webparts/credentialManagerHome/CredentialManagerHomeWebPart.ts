@@ -11,6 +11,11 @@ import * as strings from 'CredentialManagerHomeWebPartStrings';
 import CredentialManagerHome from './components/CredentialManagerHome';
 import { ICredentialManagerHomeProps } from './components/ICredentialManagerHomeProps';
 
+import CredentialManager from '../credentialManager/components/CredentialManager';
+import { ICredentialManagerProps } from '../credentialManager/components/ICredentialManagerProps';
+
+
+
 export interface ICredentialManagerHomeWebPartProps {
   description: string;
 }
@@ -18,13 +23,13 @@ export interface ICredentialManagerHomeWebPartProps {
 export default class CredentialManagerHomeWebPart extends BaseClientSideWebPart<ICredentialManagerHomeWebPartProps> {
 
   public render(): void {
+    
     const element: React.ReactElement<ICredentialManagerHomeProps > = React.createElement(
       CredentialManagerHome,
       {
         description: this.properties.description
       }
-    );
-
+    );   
     ReactDom.render(element, this.domElement);
   }
 
