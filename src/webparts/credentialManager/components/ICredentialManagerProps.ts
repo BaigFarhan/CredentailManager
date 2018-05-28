@@ -9,7 +9,6 @@ export interface ICredentialManagerProps {
   ShowModal: boolean;
   Key:string,
   spHttpClient: SPHttpClient;
-  SitrUrl:string;
   SucessFullModal:boolean,
   ErrorModal:boolean,
   SiteURL: string;
@@ -25,4 +24,7 @@ export interface ICredentialManagerProps {
   copied: false,
   DecryptedPassword:string;
   AddingItem:boolean;
+  ListName:string,
+  CurrentUserID: string,
+  DeleteModelShow: boolean
 }
