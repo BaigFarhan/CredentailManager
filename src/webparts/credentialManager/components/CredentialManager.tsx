@@ -14,7 +14,7 @@ import {
   SPHttpClientResponse, SPHttpClientConfiguration
 } from '@microsoft/sp-http';
 
-import styless from './CredentialManagerHome.module.scss';
+import ManagerHomeStyles from './CredentialManagerHome.module.scss';
 import { ICredentialManagerHomeProps } from './ICredentialManagerHomeProps';
 import * as ReactDOM from 'react-dom';
 import * as $ from 'jquery';
@@ -78,7 +78,8 @@ export default class CredentialManager extends React.Component<ICredentialManage
       AddingItem: false,
       ListName: 'CredentialManager',
       CurrentUserID: "",
-      DeleteModelShow: false
+      DeleteModelShow: false,
+      EditModalShow: false
     }
 
     this.ShowPopupModal = this.ShowPopupModal.bind(this);
@@ -91,6 +92,8 @@ export default class CredentialManager extends React.Component<ICredentialManage
     this.ShowPassword = this.ShowPassword.bind(this);
     this.OpenDeleteModal = this.OpenDeleteModal.bind(this);
     this.OpenEditModal = this.OpenEditModal.bind(this);
+    this.UpdateData = this.UpdateData.bind(this);
+
 
 
     SPComponentLoader.loadScript('https://npmcdn.com/react-bootstrap-table/dist/react-bootstrap-table.min.js');
@@ -198,53 +201,88 @@ export default class CredentialManager extends React.Component<ICredentialManage
 
   OpenEditModal(e) {
 
+    this.setState({ ProjectName: e.AppName });
+    this.setState({ UserId: e.UserName1 });
+    this.setState({ description: e.CMDescription });
+    this.setState({ EditModalShow: true });
+    this.setState({ ID: e.ID });
   }
+  CloseEditModal = () => {
+    this.setState({ ProjectName: '' });
+    this.setState({ UserId: '' });
+    this.setState({ description: '' });
+    this.setState({ Key: '' });
+    this.setState({ EditModalShow: false });
+  };
+  UpdateData(e) {//far
+    var reactHandler = this;
+    if (this.state.Key == '') {
+      return false;
+    }
+    if (this.state.ProjectName == '') {
+      return false;
+    }
+    else if (this.state.ProjectName == '') {
+      return false;
+    }
+    else if (this.state.Password == '') {
+      return false;
+    }
+    else if (this.state.description == '') {
+      return false;
+    }
+    var Cryptopwd = CryptoJS.AES.encrypt(this.state.Password, this.state.Key);
+    let list = pnp.sp.web.lists.getByTitle(this.state.ListName);
 
+    list.items.getById(parseInt(this.state.ID)).update({
+      'Title': "Some title",
+      'AppName': reactHandler.state.ProjectName,
+      'UserName1': reactHandler.state.UserId,
+      'Password': Cryptopwd.toString(),
+      'CMDescription': reactHandler.state.description,
+    }).then((result): void => {
+      this.setState({ EditModalShow: false });
+      this.setState({ ProjectName: '' });
+      this.setState({ UserId: '' });
+      this.setState({ description: '' });
+      this.setState({ Key: '' });
+      this.setState({ SucessFullModal: true });
+      this.GetCredentailManagerByCreatedUser();
+    }, (error: any): void => {
+      this.setState({ ErrorModal: true });
 
+    });
+  };
   onCopy = () => {
     this.setState({ copied: true });
   };
 
-
   CloseDeleteModal = () => {
     this.setState({ DeleteModelShow: false });
   };
+
   DeleteRecord(e) {
-
-
-
-
     let list = pnp.sp.web.lists.getByTitle(this.state.ListName);
-
     list.items.getById(parseInt(this.state.ID)).delete().then((response) => {
       this.setState({ DeleteModelShow: false });
-      this.setState({ SucessFullModal: true });
       this.GetCredentailManagerByCreatedUser();
-
+      this.setState({ SucessFullModal: true });
     }, (error: any): void => {
       this.setState({ DeleteModelShow: false });
       this.setState({ ErrorModal: true });
-
     });
   }
 
-
-
   private GetCredentailManagerList() {
-
     var reactHandler = this;
     var reqUrl = reactHandler.state.SiteURL + "/_api/web/currentUser";
     $.ajax({
       url: reqUrl, type: "GET",
-      headers:
-        {
-          "accept": "application/json;odata=verbose"
-        }
+      headers: { "accept": "application/json;odata=verbose" }
     }).then((response) => {
       this.setState({ CurrentUserID: response.d.Id });
       this.GetCredentailManagerByCreatedUser();
     });
-
   }
   GetCredentailManagerByCreatedUser() {
     var reqUrl = this.state.SiteURL + "/_api/lists/getbytitle('" + this.state.ListName + "')/items?$filter=AuthorId+eq+" + this.state.CurrentUserID;
@@ -268,14 +306,10 @@ export default class CredentialManager extends React.Component<ICredentialManage
     if (this.state.Key == '') {
       return false;
     }
+
     var Cryptopwd = CryptoJS.AES.encrypt(PasswordKey, this.state.Key);
-    //console.log("encrypted text", ciphertext.toString());
 
-    // var bytes = CryptoJS.AES.decrypt(ciphertext.toString(), 'secret key 123');
-    // var plaintext = bytes.toString(CryptoJS.enc.Utf8);
-    // console.log("decrypted text", plaintext);
-
-    pnp.sp.web.lists.getByTitle('CredentialManager').items.add({
+    pnp.sp.web.lists.getByTitle(this.state.ListName).items.add({
       'Title': "Some title",
       'AppName': AppName,
       'UserName1': UserId,
@@ -283,15 +317,12 @@ export default class CredentialManager extends React.Component<ICredentialManage
       'CMDescription': Description,
     }).then((result): void => {
 
-      this.state.ProjectName = ''
-      this.state.UserId = '';
-      this.state.Password = '';
-      this.state.Key = '';
-      var Description = this.state.description = '';
+      this.setState({ ProjectName: '' });
+      this.setState({ UserId: '' });
+      this.setState({ description: '' });
+      this.setState({ Key: '' });
       this.setState({ isModalOpen: false });
       this.setState({ SucessFullModal: true });
-
-
     }, (error: any): void => {
       this.setState({ ErrorModal: true });
 
@@ -307,7 +338,12 @@ export default class CredentialManager extends React.Component<ICredentialManage
     this.setState({ AddingItem: true });
   }
   public CloseAddingCredentials() {
+    this.setState({ ProjectName: '' });
+    this.setState({ UserId: '' });
+    this.setState({ description: '' });
+    this.setState({ Key: '' });
     this.setState({ AddingItem: false });
+    this.GetCredentailManagerByCreatedUser();
 
   }
 
@@ -355,7 +391,7 @@ export default class CredentialManager extends React.Component<ICredentialManage
                 <GridForm>
                   <Row>
                     <Field span={1}>
-                      <label>Enter The Password Key :</label>
+                      <label><span className={ManagerHomeStyles.required}>*</span> Enter The Password Key :  </label>
                       <input type="password" value={this.state.Key} onChange={this.OnChangeKey.bind(this)} />
                     </Field>
                   </Row>
@@ -364,10 +400,8 @@ export default class CredentialManager extends React.Component<ICredentialManage
                 <button className={"btn btn-success"} onClick={this.SaveData.bind(this)}>Save</button> &nbsp;
             <button className={'btn btn-primary'} onClick={this.CloseModal.bind(this)}>Close</button>
               </Modal.Body>
-              {/* <Modal.Footer>
-            <Button className={'.btn-primary'} onClick={this.CloseModal}>Close</Button>
-          </Modal.Footer> */}
             </Modal>
+
             <Modal show={this.state.SucessFullModal} >
               <Modal.Body>
                 <div className="alert alert-success">
@@ -388,33 +422,31 @@ export default class CredentialManager extends React.Component<ICredentialManage
                 <button type="button" onClick={this.CloseErrorModal} className="btn btn-default" data-dismiss="modal">Close</button>
               </Modal.Footer>
             </Modal>
-
             <GridForm>
               <Row>
                 <Field span={1}>
-                  <label>App Name  :</label>
+                  <label><span className={ManagerHomeStyles.required}>*</span> App Name  :</label>
                   <input type="text" value={this.state.ProjectName} onChange={this.OnChangeProject.bind(this)} />
                 </Field>
               </Row>
               <Row>
                 <Field span={4}>
-                  <label>User Name  :</label>
+                  <label><span className={ManagerHomeStyles.required}>*</span> User Name  :</label>
                   <input type="text" value={this.state.UserId} onChange={this.OnChangeUserID.bind(this)} />
                 </Field>
               </Row>
               <Row>
                 <Field span={4}>
-                  <label>Password</label>
+                  <label><span className={ManagerHomeStyles.required}>*</span> Password :</label>
                   <input type="Password" value={this.state.Password} onChange={this.OnChangePassword.bind(this)} />
                 </Field>
               </Row>
               <Row>
                 <Field span={4}>
-                  <label>Description</label>
+                  <label><span className={ManagerHomeStyles.required}>*</span> Description :</label>
                   <input type="text" value={this.state.description} onChange={this.OnChangeDescription.bind(this)} />
                 </Field>
               </Row>
-
               <Row>
                 <Field span={4}>
                   <button className={'btn btn-info active'} onClick={this.ShowPopupModal}>Submit</button>
@@ -426,10 +458,9 @@ export default class CredentialManager extends React.Component<ICredentialManage
           </div>
         }
 
-
         {
           this.state.AddingItem == false &&
-          <div className={styless.credentialManagerHome}>
+          <div className={ManagerHomeStyles.credentialManagerHome}>
             <Modal show={this.state.ModelShow} onHide={this.CloseModal}>
               <Modal.Header >
                 <Modal.Title>Provide Password Key</Modal.Title>
@@ -439,9 +470,6 @@ export default class CredentialManager extends React.Component<ICredentialManage
                   <Row>
                     <Field span={1}>
                       <label>Enter The Password Key :</label>
-                      {/* <input type="password" id="userkey"
-            value={this.state.UserInputPasswordKey}
-            onChange={this.OnChangePasswordKey.bind(this)} /> */}
                       <input value={this.state.value}
                         onChange={this.OnChangePasswordKey.bind(this)} />
 
@@ -460,7 +488,7 @@ export default class CredentialManager extends React.Component<ICredentialManage
             </Modal>
             <Modal show={this.state.DeleteModelShow} onHide={this.CloseModal}>
               <Modal.Header >
-                Are You Sure to Delete?
+                <strong> Are You Sure to Delete?</strong>
               </Modal.Header>
               <Modal.Body>
                 <button className={"btn btn-primary"} onClick={this.DeleteRecord.bind(this)}>Yes</button> &nbsp;
@@ -478,12 +506,51 @@ export default class CredentialManager extends React.Component<ICredentialManage
               <TableHeaderColumn width="8%" dataAlign="center" dataFormat={buttonFormatterEdit}></TableHeaderColumn>
               <TableHeaderColumn width="8%" dataAlign="center" dataFormat={buttonFormatterDelete}></TableHeaderColumn>
             </BootstrapTable>
-            <button className={styless.button} onClick={this.AddCredential.bind(this)}>Add Credential</button>
-
+            <button className={ManagerHomeStyles.button} onClick={this.AddCredential.bind(this)}>Add Credential</button>
+            <Modal show={this.state.EditModalShow} onHide={this.CloseModal}>
+              <Modal.Header>
+                <div className={"well well-sm"}><h3> <span className={"label label-default"}>Update User Info</span></h3></div>
+              </Modal.Header>
+              <Modal.Body>
+                <GridForm>
+                  <Row>
+                    <Field span={1}>
+                      <label><span className={ManagerHomeStyles.required}>*</span> App Name  :</label>
+                      <input type="text" value={this.state.ProjectName} onChange={this.OnChangeProject.bind(this)} />
+                    </Field>
+                  </Row>
+                  <Row>
+                    <Field span={4}>
+                      <label><span className={ManagerHomeStyles.required}>*</span> User Name  :</label>
+                      <input type="text" value={this.state.UserId} onChange={this.OnChangeUserID.bind(this)} />
+                    </Field>
+                  </Row>
+                  <Row>
+                    <Field span={4}>
+                      <label><span className={ManagerHomeStyles.required}>*</span> Password :</label>
+                      <input type="Password" value={this.state.Password} onChange={this.OnChangePassword.bind(this)} />
+                    </Field>
+                  </Row>
+                  <Row>
+                    <Field span={4}>
+                      <label><span className={ManagerHomeStyles.required}>*</span> Description :</label>
+                      <input type="text" value={this.state.description} onChange={this.OnChangeDescription.bind(this)} />
+                    </Field>
+                  </Row>
+                  <Row>
+                    <Field span={4}>
+                      <label><span className={ManagerHomeStyles.required}>*</span> Key :</label>
+                      <input type="text" value={this.state.Key} onChange={this.OnChangeKey.bind(this)} />
+                    </Field>
+                  </Row>
+                </GridForm>
+                <br />
+                <button className={"btn btn-success"} onClick={this.UpdateData.bind(this)}>Update</button> &nbsp;
+                <button className={'btn btn-primary'} onClick={this.CloseEditModal}>Close</button>
+              </Modal.Body>
+            </Modal>
           </div>
         }
-
-
       </div>
     );
   }
