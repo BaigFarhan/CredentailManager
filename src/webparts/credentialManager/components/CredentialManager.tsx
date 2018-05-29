@@ -495,10 +495,9 @@ export default class CredentialManager extends React.Component<ICredentialManage
                 <button className={'btn btn-default'} onClick={this.CloseDeleteModal}>No</button>
               </Modal.Body>
             </Modal>
-            <BootstrapTable search options={options}
-              containerStyle={{ border: '#46b8da 1px solid' }}
-              bodyStyle={{ border: '#46b8da 1px solid' }}
-              striped={true} hover={true} condensed={true} data={this.state.Data} pagination={true}>
+            <h1>Credential Manager</h1>
+            <BootstrapTable search options={options} className={styles["ms-Grid"]}
+              striped={true} hover={true} condened={true} data={this.state.Data} pagination={true}>
               <TableHeaderColumn dataAlign="center" isKey dataField='UserName1'>User Name</TableHeaderColumn>
               <TableHeaderColumn dataAlign="center" dataField='AppName'>App Name</TableHeaderColumn>
               <TableHeaderColumn dataAlign="center" dataField='Password'>Password</TableHeaderColumn>
