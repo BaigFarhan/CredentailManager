@@ -26,5 +26,6 @@ export interface ICredentialManagerProps {
   AddingItem:boolean;
   ListName:string,
   CurrentUserID: string,
-  DeleteModelShow: boolean
+  DeleteModelShow: boolean,
+  EditModalShow: boolean
 }
