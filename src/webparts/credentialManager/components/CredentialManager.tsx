@@ -63,7 +63,7 @@ export default class CredentialManager extends React.Component<ICredentialManage
       spHttpClient: this.props.spHttpClient,
       SucessFullModal: false,
       ErrorModal: false,
-      SiteURL: 'https://mirzaa.sharepoint.com/sites/dev',
+      SiteURL: 'https://arabtec.sharepoint.com/sites/dev',
       Data: this.props.Data,
       ModelShow: false,
       ID: "",
@@ -392,7 +392,7 @@ export default class CredentialManager extends React.Component<ICredentialManage
                   <Row>
                     <Field span={1}>
                       <label><span className={ManagerHomeStyles.required}>*</span> Enter The Password Key :  </label>
-                      <input type="password" value={this.state.Key} onChange={this.OnChangeKey.bind(this)} />
+                      <input type="Password" value={this.state.Key} onChange={this.OnChangeKey.bind(this)} />
                     </Field>
                   </Row>
                 </GridForm>
@@ -470,7 +470,7 @@ export default class CredentialManager extends React.Component<ICredentialManage
                   <Row>
                     <Field span={1}>
                       <label>Enter The Password Key :</label>
-                      <input value={this.state.value}
+                      <input value={this.state.value} type="Password"
                         onChange={this.OnChangePasswordKey.bind(this)} />
 
                     </Field>
@@ -540,7 +540,7 @@ export default class CredentialManager extends React.Component<ICredentialManage
                   <Row>
                     <Field span={4}>
                       <label><span className={ManagerHomeStyles.required}>*</span> Key :</label>
-                      <input type="text" value={this.state.Key} onChange={this.OnChangeKey.bind(this)} />
+                      <input type="Password" value={this.state.Key} onChange={this.OnChangeKey.bind(this)} />
                     </Field>
                   </Row>
                 </GridForm>
