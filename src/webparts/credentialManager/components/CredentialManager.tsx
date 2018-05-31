@@ -7,7 +7,7 @@ import { Button, Modal } from 'react-bootstrap';
 import { FormControl, GridForm, Form, FormGroup, Col, Fieldset, Row, Field } from 'react-gridforms'
 import { PropertyPaneCheckbox } from '@microsoft/sp-webpart-base';
 import Dialog from 'react-bootstrap-dialog';
-import * as pnp from 'sp-pnp-js';
+import { default as pnp, ItemAddResult, Web } from "sp-pnp-js";
 import {
   SPHttpClient,
   SPHttpClientBatch,
@@ -63,7 +63,7 @@ export default class CredentialManager extends React.Component<ICredentialManage
       spHttpClient: this.props.spHttpClient,
       SucessFullModal: false,
       ErrorModal: false,
-      SiteURL: 'https://arabtec.sharepoint.com/sites/dev',
+      SiteURL: this.props.SiteURL,
       Data: this.props.Data,
       ModelShow: false,
       ID: "",
@@ -232,12 +232,15 @@ export default class CredentialManager extends React.Component<ICredentialManage
       return false;
     }
     var Cryptopwd = CryptoJS.AES.encrypt(this.state.Password, this.state.Key);
-    let list = pnp.sp.web.lists.getByTitle(this.state.ListName);
 
+    var NewISiteUrl = reactHandler.state.SiteURL;
+    var NewSiteUrl = NewISiteUrl.replace("/SitePages", "");
+    let webx = new Web(NewSiteUrl);
+    let list = webx.lists.getByTitle(this.state.ListName);
     list.items.getById(parseInt(this.state.ID)).update({
       'Title': "Some title",
-      'AppName': reactHandler.state.ProjectName,
-      'UserName1': reactHandler.state.UserId,
+      'AppNames': reactHandler.state.ProjectName,
+      'UserNames': reactHandler.state.UserId,
       'Password': Cryptopwd.toString(),
       'CMDescription': reactHandler.state.description,
     }).then((result): void => {
@@ -262,7 +265,11 @@ export default class CredentialManager extends React.Component<ICredentialManage
   };
 
   DeleteRecord(e) {
-    let list = pnp.sp.web.lists.getByTitle(this.state.ListName);
+    var NewISiteUrl = this.state.SiteURL;
+    var NewSiteUrl = NewISiteUrl.replace("/SitePages", "");
+    var reqUrl = NewISiteUrl + "/_api/web/currentUser";
+    let webx = new Web(NewSiteUrl);
+    let list = webx.lists.getByTitle(this.state.ListName);
     list.items.getById(parseInt(this.state.ID)).delete().then((response) => {
       this.setState({ DeleteModelShow: false });
       this.GetCredentailManagerByCreatedUser();
@@ -275,7 +282,9 @@ export default class CredentialManager extends React.Component<ICredentialManage
 
   private GetCredentailManagerList() {
     var reactHandler = this;
-    var reqUrl = reactHandler.state.SiteURL + "/_api/web/currentUser";
+    var NewISiteUrl = reactHandler.state.SiteURL;
+    var NewSiteUrl = NewISiteUrl.replace("/SitePages", "");
+    var reqUrl = NewISiteUrl + "/_api/web/currentUser";
     $.ajax({
       url: reqUrl, type: "GET",
       headers: { "accept": "application/json;odata=verbose" }
@@ -285,7 +294,9 @@ export default class CredentialManager extends React.Component<ICredentialManage
     });
   }
   GetCredentailManagerByCreatedUser() {
-    var reqUrl = this.state.SiteURL + "/_api/lists/getbytitle('" + this.state.ListName + "')/items?$filter=AuthorId+eq+" + this.state.CurrentUserID;
+    var NewISiteUrl = this.state.SiteURL ;
+    var NewSiteUrl = NewISiteUrl.replace("/SitePages", "");
+    var reqUrl =NewISiteUrl  + "/_api/lists/getbytitle('" + this.state.ListName + "')/items?$filter=AuthorId+eq+" + this.state.CurrentUserID;
     $.ajax({
       url: reqUrl, type: "GET",
       headers:
@@ -308,11 +319,13 @@ export default class CredentialManager extends React.Component<ICredentialManage
     }
 
     var Cryptopwd = CryptoJS.AES.encrypt(PasswordKey, this.state.Key);
-
-    pnp.sp.web.lists.getByTitle(this.state.ListName).items.add({
+    var NewISiteUrl = this.state.SiteURL;
+    var NewSiteUrl = NewISiteUrl.replace("/SitePages", "");
+    let webx = new Web(NewSiteUrl);
+    webx.lists.getByTitle(this.state.ListName).items.add({
       'Title': "Some title",
-      'AppName': AppName,
-      'UserName1': UserId,
+      'AppNames': AppName,
+      'UserNames': UserId,
       'Password': Cryptopwd.toString(),
       'CMDescription': Description,
     }).then((result): void => {
@@ -378,6 +391,7 @@ export default class CredentialManager extends React.Component<ICredentialManage
     };
 
     return (
+      <div className={styles.MainGrid}>
       <div className={styles.credentialManager} >
         {
           this.state.AddingItem == true &&
@@ -495,11 +509,11 @@ export default class CredentialManager extends React.Component<ICredentialManage
                 <button className={'btn btn-default'} onClick={this.CloseDeleteModal}>No</button>
               </Modal.Body>
             </Modal>
-            <h1>Credential Manager</h1>
+            <div className={styles.mainHeading}>Credential Manager</div>
             <BootstrapTable search options={options} className={styles["ms-Grid"]}
               striped={true} hover={true} condened={true} data={this.state.Data} pagination={true}>
-              <TableHeaderColumn dataAlign="center" isKey dataField='UserName1'>User Name</TableHeaderColumn>
-              <TableHeaderColumn dataAlign="center" dataField='AppName'>App Name</TableHeaderColumn>
+              <TableHeaderColumn dataAlign="center" isKey dataField='UserNames'>User Name</TableHeaderColumn>
+              <TableHeaderColumn dataAlign="center" dataField='AppNames'>App Name</TableHeaderColumn>
               <TableHeaderColumn dataAlign="center" dataField='Password'>Password</TableHeaderColumn>
               <TableHeaderColumn width="8%" dataAlign="center" dataFormat={buttonFormatterDecrypt}></TableHeaderColumn>
               <TableHeaderColumn width="8%" dataAlign="center" dataFormat={buttonFormatterEdit}></TableHeaderColumn>
@@ -551,6 +565,8 @@ export default class CredentialManager extends React.Component<ICredentialManage
           </div>
         }
       </div>
+    </div>
+    
     );
   }
 }

@@ -15,7 +15,9 @@ export default class CredentialManagerWebPart extends BaseClientSideWebPart<ICre
     const element: React.ReactElement<ICredentialManagerProps > = React.createElement(
       CredentialManager,
       {
-        description: this.properties.description
+        description: this.properties.description,
+        SiteURL:this.context.pageContext.web.absoluteUrl,
+        
       }
     );
     ReactDom.render(element, this.domElement);
